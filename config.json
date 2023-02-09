@@ -1,0 +1,11 @@
+{
+    "prefix": "z",
+    "emojis": {
+        "checkmark": "<:checkmark:1071740029325553686>",
+        "warning": "<:warningalert:1071739715893600366>",
+        "userinfo": "<:userinfo:1071741636624781342>"
+    },
+    "colors": {
+        "primary": "#2F3136"
+    }
+}
