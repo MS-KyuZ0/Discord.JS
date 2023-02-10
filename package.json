@@ -10,8 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "discord-command-cooldown": "^1.0.8",
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.3",
-    "mongoose": "^6.9.1"
+    "mongoose": "^6.9.1",
+    "ms": "^2.1.3"
   }
 }

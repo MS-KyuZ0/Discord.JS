@@ -16,7 +16,6 @@ const client = new Client({
 // ! Collection
 client.command = new Collection();
 client.slashCommand = new Collection();
-client.cooldown = new Collection();
 
 // ! Handlers
 commandHandler(client);

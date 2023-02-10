@@ -3,7 +3,7 @@ const { MessageCollector, Client } = require("discord.js");
 module.exports = {
   name: "ping",
   description: "Testing bot response.",
-  cooldown: 10,
+  cooldown: "10s",
   aliases: [],
   /**
    *

@@ -1,7 +1,8 @@
 const { Events, Message, Client, Collection } = require("discord.js");
+const { CommandCooldown, msToMinutes } = require("discord-command-cooldown");
 let { prefix } = require("../../../config.json");
 const guildPrefix = require("../../Models/guildPrefix");
-const fs = require("node:fs");
+const ms = require("ms");
 
 module.exports = {
   name: Events.MessageCreate,
@@ -21,35 +22,37 @@ module.exports = {
     const command = content.toLowerCase().split(" ")[0].slice(prefix.length);
     const args = content.toLowerCase().split(" ").slice(1);
     const isCommand = client.command.find((cmd) => cmd.name === command);
+
     if (!isCommand) return;
+    if (isCommand.cooldown) {
+      const isCooldown = new CommandCooldown(
+        `${isCommand.name}-cooldown`,
+        ms(`${isCommand.cooldown}`)
+      );
+      const userCooldowned = await isCooldown.getUser(message.author.id);
+
+      if (userCooldowned) {
+        const timeLeft = msToMinutes(userCooldowned.msLeft, false);
+
+        return message.reply(
+          `You need to wait \` ${
+            isCommand.name === "daily"
+              ? timeLeft.hours +
+                " hours, " +
+                timeLeft.minutes +
+                " minutes, " +
+                timeLeft.seconds +
+                " seconds"
+              : timeLeft.seconds + " seconds"
+          } \` before running \` ${isCommand.name.toUpperCase()} \` command again!`
+        );
+      } else {
+        await isCooldown.addUser(message.author.id);
+      }
+    }
 
     try {
       isCommand.execute(message, args, client);
-
-      if (!client.cooldown.has(isCommand.name)) {
-        client.cooldown.set(isCommand.name, new Collection());
-      }
-
-      const now = Date.now();
-      const timestamps = client.cooldown.get(isCommand.name);
-      const cooldownAmount = (isCommand.cooldown || 3) * 1000;
-
-      if (timestamps.has(message.author.id)) {
-        const expirationTime =
-          timestamps.get(message.author.id) + cooldownAmount;
-
-        if (now < expirationTime) {
-          const timeLeft = (expirationTime - now) / 1000;
-          return message.reply(
-            `Please wait ${timeLeft.toFixed(
-              1
-            )} more second(s) before reusing the \`${isCommand.name}\` command.`
-          );
-        }
-
-        timestamps.set(message.author.id, now);
-        setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
-      }
     } catch (err) {
       console.log(err);
     }

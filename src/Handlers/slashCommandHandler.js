@@ -15,8 +15,6 @@ const slashCommandHander = (client) => {
       .readdirSync(`./src/slashCommands/${folder}`)
       .filter((f) => f.endsWith(".js"));
 
-    console.log(commandFiles);
-
     for (const file of commandFiles) {
       const command = require(`../slashCommands/${folder}/${file}`);
 
