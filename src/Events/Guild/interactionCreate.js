@@ -1,17 +1,18 @@
-const { Events, BaseInteraction, Client } = require("discord.js");
+const { Events, BaseInteraction, Client, EmbedBuilder } = require("discord.js");
 const { CommandCooldown, msToMinutes } = require("discord-command-cooldown");
+const { colors } = require("../../../config.json");
 const ms = require("ms");
 
 module.exports = {
   name: Events.InteractionCreate,
   /**
-   *
    * @param {BaseInteraction} interaction
    * @param {Client} client
    */
   async execute(interaction, client) {
     if (!interaction.isChatInputCommand()) return;
 
+    const isEmbed = new EmbedBuilder().setColor(colors.primary);
     const command = interaction.client.slashCommand.get(
       interaction.commandName
     );
@@ -33,7 +34,7 @@ module.exports = {
       if (userCooldowned) {
         const timeLeft = msToMinutes(userCooldowned.msLeft, false);
 
-        return interaction.reply(
+        isEmbed.setDescription(
           `You need to wait \` ${
             command.name === "daily"
               ? timeLeft.hours +
@@ -45,13 +46,15 @@ module.exports = {
               : timeLeft.seconds + " seconds"
           } \` before running \` ${command.data.name.toUpperCase()} \` command again!`
         );
+
+        return interaction.reply({ embeds: [isEmbed], ephemeral: true });
       } else {
         await isCooldown.addUser(interaction.user.id);
       }
     }
 
     try {
-      await command.execute(interaction);
+      await command.execute(interaction, client);
     } catch (error) {
       console.error(error);
       await interaction.reply({

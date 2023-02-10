@@ -1,6 +1,6 @@
-const { Events, Message, Client, Collection } = require("discord.js");
+const { Events, Message, Client, EmbedBuilder } = require("discord.js");
 const { CommandCooldown, msToMinutes } = require("discord-command-cooldown");
-let { prefix } = require("../../../config.json");
+let { prefix, colors } = require("../../../config.json");
 const guildPrefix = require("../../Models/guildPrefix");
 const ms = require("ms");
 
@@ -15,6 +15,7 @@ module.exports = {
     if (message.author.bot || !message.guild) return;
     const { content, guildId } = message;
     const isCustomPrefix = await guildPrefix.findOne({ guildId: guildId });
+    const isEmbed = new EmbedBuilder().setColor(colors.primary);
 
     if (isCustomPrefix) prefix = isCustomPrefix.prefix;
     if (!content.startsWith(prefix)) return;
@@ -34,7 +35,7 @@ module.exports = {
       if (userCooldowned) {
         const timeLeft = msToMinutes(userCooldowned.msLeft, false);
 
-        return message.reply(
+        isEmbed.setDescription(
           `You need to wait \` ${
             isCommand.name === "daily"
               ? timeLeft.hours +
@@ -46,6 +47,7 @@ module.exports = {
               : timeLeft.seconds + " seconds"
           } \` before running \` ${isCommand.name.toUpperCase()} \` command again!`
         );
+        return message.reply({ embeds: [isEmbed], ephemeral: true });
       } else {
         await isCooldown.addUser(message.author.id);
       }

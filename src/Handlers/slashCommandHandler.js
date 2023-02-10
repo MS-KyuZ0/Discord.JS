@@ -4,7 +4,6 @@ const fs = require("node:fs");
 const commands = [];
 
 /**
- *
  * @param {Client} client
  */
 const slashCommandHander = (client) => {
@@ -19,7 +18,8 @@ const slashCommandHander = (client) => {
       const command = require(`../slashCommands/${folder}/${file}`);
 
       if ("data" in command && "execute" in command) {
-        client.slashCommand.set(command.data.name, command);
+        const isProps = { folder, ...command };
+        client.slashCommand.set(command.data.name, isProps);
         commands.push(command.data.toJSON());
       } else {
         console.log(
