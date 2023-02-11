@@ -17,7 +17,7 @@ module.exports = {
     const { user } = interaction;
     const isEmbed = new EmbedBuilder().setColor(colors.primary);
 
-    userAccountDB.findOne({ userId: user.id }, async (err, account) => {
+    userAccountDB.findOne({ id: user.id }, async (err, account) => {
       if (err) return console.log(err);
       if (account)
         return interaction.reply({
@@ -29,12 +29,7 @@ module.exports = {
         });
 
       await userAccountDB.create({
-        userId: user.id,
-        userName: `${user.username}#${user.discriminator}`,
-        level: 1,
-        xp: 0,
-        nventory: [],
-        money: 50000,
+        id: user.id,
       });
 
       interaction.reply({

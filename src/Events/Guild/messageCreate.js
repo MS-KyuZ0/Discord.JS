@@ -22,7 +22,9 @@ module.exports = {
 
     const command = content.toLowerCase().split(" ")[0].slice(prefix.length);
     const args = content.toLowerCase().split(" ").slice(1);
-    const isCommand = client.command.find((cmd) => cmd.name === command);
+    const isCommand = client.command.find(
+      (cmd) => cmd.name === command || cmd.aliases.includes(command)
+    );
 
     if (!isCommand) return;
     if (isCommand.cooldown) {

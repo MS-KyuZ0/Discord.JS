@@ -1,11 +1,11 @@
 const { EmbedBuilder } = require("discord.js");
 
-async function addXP(channel, data, user, xpMin, xpMax) {
+async function addXP(channel, data, user, xp) {
   if (!data) return;
 
   const xpReq = data.level * data.level * 200;
   const moneyReward = data.Level * 5000;
-  const getXp = Math.floor(Math.random * (xpMax - xpMin + 1) + xpMin);
+  const getXp = Math.floor(10 * Math.pow(1.1, data.level));
 
   data.xp += getXp;
   if (data.xp >= xpReq) {
@@ -17,7 +17,7 @@ async function addXP(channel, data, user, xpMin, xpMax) {
     const isEmbed = new EmbedBuilder()
       .setColor(0x2f3136)
       .setDescription(
-        `Whooaa ${user}, you have reached \` Level ${data.Level} \`!`
+        `Whooaa ${user}, you have reached \` Level ${data.level} \`!`
       );
 
     channel.send({ embeds: [isEmbed] });

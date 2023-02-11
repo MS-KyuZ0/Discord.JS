@@ -16,8 +16,9 @@ const commandHandler = (client) => {
 
     for (const file of commandFiles) {
       const commandHandler = require(`../Commands/${folder}/${file}`);
+      const isProps = { folder, ...commandHandler };
 
-      client.command.set(commandHandler.name, commandHandler);
+      client.command.set(commandHandler.name, isProps);
     }
   }
 };

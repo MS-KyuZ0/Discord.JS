@@ -15,7 +15,7 @@ module.exports = {
     const { author } = message;
     const isEmbed = new EmbedBuilder().setColor(colors.primary);
 
-    userAccountDB.findOne({ userId: author.id }, async (err, account) => {
+    userAccountDB.findOne({ id: author.id }, async (err, account) => {
       if (err) return console.log(err);
       if (account)
         return message.reply({
@@ -27,12 +27,7 @@ module.exports = {
         });
 
       await userAccountDB.create({
-        userId: author.id,
-        userName: `${author.username}#${author.discriminator}`,
-        level: 1,
-        xp: 0,
-        inventory: [],
-        money: 50000,
+        id: author.id,
       });
 
       message.reply({
